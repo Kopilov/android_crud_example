@@ -1,0 +1,54 @@
+<resources>
+    <string name="app_name">Контроль питания детей</string>
+    <string name="name_appbar">Личный кабинет</string>
+    <string name="welcome">Добро пожаловать</string>
+    <string name="monitoring_childrens_nutrition">Контроль питания детей</string>
+    <string name="btnSignIn">Войти</string>
+    <string name="btnRegister">Регистрация</string>
+    <string name="btnContinue">Продолжить</string>
+    <string name="enterTheData">Введите данные</string>
+    <string name="Name">Имя</string>
+    <string name="Surname">Фамилия</string>
+    <string name="Patronymic">Отчество</string>
+    <string name="btnRegister2">Завершить регистрацию</string>
+    <string name="btnForgotPass">Забыли пароль?</string>
+    <string name="btnBack">Назад</string>
+    <string name="btnParents">Родитель</string>
+    <string name="btnEducator">Воспитатель</string>
+    <string name="btnTeacher">Учитель</string>
+    <string name="btnLeader">Руководитель садика</string>
+    <string name="btnDirector">Директор школы</string>
+    <string name="selectYourCity">Выберите свой город</string>
+    <string name="chooseYourStatus">Выберите свой статус</string>
+    <string name="email">Email</string>
+    <string name="pass">Пароль</string>
+    <string name="confirmPass">Подтвердите пароль</string>
+    <string name="createAnAccount">Создайте учетную запись</string>
+    <string name="signInYourAccount">Войдите в учетную запись</string>
+    <string name="invalid_name">Email не корректный</string>
+    <string name="invalid_password">Введите от 6 до 12 знаков</string>
+    <string name="invalid_confirm_pass">Пароли не совпадают</string>
+    <string name="btnVerifEmail">Подтвердите Email</string>
+    <string name="access_recovery">Восстановление доступа</string>
+    <string name="reset_password">Сброс пароля</string>
+    <string name="color_table">Поменять цвет</string>
+    <string name="add_child">Добавить ребенка</string>
+    <string name="delete">Удалить</string>
+    <string name="exit">Выход</string>
+    <string name="confirm">Подтвердить</string>
+
+    <string name="enter_child_details">Введите данные ребенка</string>
+    <string name="personal_account">Лицевой счет</string>
+    <string name="surname_child">Фамилия ребенка</string>
+    <string name="name_child">Имя ребенка</string>
+    <string name="patronymic_child">Отчество ребенка</string>
+    <string name="add_to">Добавить</string>
+    <string name="cancellation">Отмена</string>
+
+    <string name="number">№</string>
+    <string name="fio_child">Ф.И.О. ребенка</string>
+    <string name="number_lc">Лицевой счет</string>
+    <string name="balance">Баланс</string>
+    <string name="alphabet">По алфавиту</string>
+
+</resources>
