@@ -23,16 +23,16 @@ import android.widget.Toast;
 
 import com.example.myapplication.db.MyDbManager;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
-    String Value1;
 
     AlertDialog.Builder dialogBuilder;
     AlertDialog dialog;
     EditText personal_account, surname_child, name_child, patronymic_child;
     Button add_to, cancellation;
     TableLayout table_children;
-    TableRow tr;
     TextView number, fio_child, number_lc, balance;
     //удаляем ребенка
     ImageView mark;
@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         table_children = (TableLayout) findViewById(R.id.table_children);
-        tr = (TableRow) findViewById(R.id.row);
         balance = (TextView) findViewById(R.id.balance);
         mark = (ImageView) findViewById(R.id.mark);
 
@@ -62,7 +61,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         myDbManager.openDb();
+        TableLayout tableLayout = (TableLayout) findViewById(R.id.table_children);
+        tableLayout.removeAllViews();
 
+        LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
+        TableRow header = (TableRow) inflater.inflate(R.layout.table_row_header, null);
+        tableLayout.addView(header);
+
+        List<List<String>> data = myDbManager.getFromDb();
+        for (List<String> row: data) {
+            TableRow tr = (TableRow) inflater.inflate(R.layout.table_row_plus, null);
+            infillRow(tableLayout, tr, row.get(1), row.get(2));
+            tableLayout.addView(tr);
+        }
     }
 
     @Override
@@ -71,6 +82,64 @@ public class MainActivity extends AppCompatActivity {
         inflater.inflate(R.menu.nenu_educator, menu);
         return true;
 
+    }
+
+    private void infillRow(TableLayout tableLayout, TableRow tr, String value1, String tv4) {
+        number = (TextView) tr.findViewById(R.id.number);
+
+        //нумерации строк при добавлении строки
+        int aInt = table_children.getChildCount();
+        for (int m = 0; m < aInt; m++) {
+            String aString = Integer.toString(m + 1);
+            number.setText(aString);
+        }
+
+        fio_child = (TextView) tr.findViewById(R.id.fio_child);
+        fio_child.setText(value1);
+        number_lc = (TextView) tr.findViewById(R.id.number_lc);
+        number_lc.setText(tv4);
+
+        //переопределяем ImageView, которые появляются со строками
+        ImageView markOfTheRow = tr.findViewById(R.id.mark);
+        markOfTheRow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                String myFio_child;
+                TableRow tr = (TableRow)v.getParent();
+                TextView reb = (TextView) tr.getChildAt(1);
+                myFio_child = reb.getText().toString();
+                builder.setMessage("Удалить: " + myFio_child + " ?");
+                builder.setCancelable(true);
+                builder.setNegativeButton("нет", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        number_lc = (TextView) tr.findViewById(R.id.number_lc);
+                        myDbManager.removeFromDb(number_lc.getText().toString());
+                        tableLayout.removeView(tr);
+                        Toast.makeText(getApplicationContext(), "Ребенок удалён", Toast.LENGTH_SHORT).show();
+
+                        int aInt = tableLayout.getChildCount();
+                        for (int m = 1; m < aInt; m++) {
+                            TableRow tr = (TableRow)tableLayout.getChildAt(m);
+                            TextView number = (TextView) tr.getChildAt(0);
+                            number.setText(String.valueOf(m));
+                        }
+
+                    }
+                });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+
+            }
+        });
     }
 
     @Override
@@ -98,65 +167,14 @@ public class MainActivity extends AppCompatActivity {
                         TableLayout tableLayout = (TableLayout) findViewById(R.id.table_children);
                         LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
                         TableRow tr = (TableRow) inflater.inflate(R.layout.table_row_plus, null);
-                        number = (TextView) tr.findViewById(R.id.number);
 
-                        //нумерации строк при добавлении строки
-                        int aInt = table_children.getChildCount();
-                        for (int m = 0; m < aInt; m++) {
-                            String aString = Integer.toString(m + 1);
-                            number.setText(aString);
-                        }
-
-                        fio_child = (TextView) tr.findViewById(R.id.fio_child);
+                        //заполняем строку
                         String tv1 = surname_child.getText().toString();
                         String tv2 = name_child.getText().toString();
                         String tv3 = patronymic_child.getText().toString();
-                        Value1 = tv1 + " " + tv2 + " " + tv3;
-                        fio_child.setText(Value1);
-                        number_lc = (TextView) tr.findViewById(R.id.number_lc);
+                        String value1 = tv1 + " " + tv2 + " " + tv3;
                         String tv4 = personal_account.getText().toString();
-                        number_lc.setText(tv4);
-
-                        //переопределяем ImageView, которые появляются со строками
-                        ImageView markOfTheRow = tr.findViewById(R.id.mark);
-                        markOfTheRow.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-
-                                final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                                String myFio_child;
-                                TableRow tr = (TableRow)v.getParent();
-                                TextView reb = (TextView) tr.getChildAt(1);
-                                myFio_child = reb.getText().toString();
-                                builder.setMessage("Удалить: " + myFio_child + " ?");
-                                builder.setCancelable(true);
-                                builder.setNegativeButton("нет", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.cancel();
-                                    }
-                                });
-                                builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        tableLayout.removeView(tr);
-                                        Toast.makeText(getApplicationContext(), "Ребенок удалён", Toast.LENGTH_SHORT).show();
-
-                                        int aInt = tableLayout.getChildCount();
-                                        for (int m = 1; m < aInt; m++) {
-                                            TableRow tr = (TableRow)tableLayout.getChildAt(m);
-                                            TextView number = (TextView) tr.getChildAt(0);
-                                            number.setText(String.valueOf(m));
-                                        }
-
-                                    }
-                                });
-                                AlertDialog alertDialog = builder.create();
-                                alertDialog.show();
-
-                            }
-                        });
-
+                        infillRow(tableLayout, tr, value1, tv4);
                         //добавляем строку
                         tableLayout.addView(tr);
                         dialog.dismiss();

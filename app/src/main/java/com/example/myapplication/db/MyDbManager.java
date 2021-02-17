@@ -31,19 +31,26 @@ public class MyDbManager {
 
     }
     //для открывания БД (считывание)
-    public List<String> getFromDb() {
-        List<String> tempList = new ArrayList<>();
+    public List<List<String>> getFromDb() {
+        List<List<String>> tempList = new ArrayList<>();
         Cursor cursor = db.query(MyConstants.TABLE_NAME, null, null, null, null, null, null);
         while (cursor.moveToNext()) {
+            List<String> row = new ArrayList<>();
             String number = cursor.getString(cursor.getColumnIndex(MyConstants.COLUMN_NUMBER));
             String fio_child = cursor.getString(cursor.getColumnIndex(MyConstants.COLUMN_FIO_CHILD));
             String number_lc = cursor.getString(cursor.getColumnIndex(MyConstants.COLUMN_NUMBER_LC));
-            tempList.add(number);
-            tempList.add(fio_child);
-            tempList.add(number_lc);
+            row.add(number);
+            row.add(fio_child);
+            row.add(number_lc);
+
+            tempList.add(row);
         }
         cursor.close();
         return tempList;
+    }
+
+    public void removeFromDb(String number_lc) {
+        db.delete(MyConstants.TABLE_NAME, MyConstants.COLUMN_NUMBER_LC + " = ?", new String[]{number_lc});
     }
     //для закрытия БД
     public void closeDb() {

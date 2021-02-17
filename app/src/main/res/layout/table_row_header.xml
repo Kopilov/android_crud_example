@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="15dp"
+        android:layout_height="wrap_content"
+        android:text="@string/number"
+        android:textColor="@color/black"
+        android:textSize="8sp"
+        android:gravity="center"
+        android:background="@drawable/edittext_border_2"
+        />
+
+    <TextView
+        android:id="@+id/fio_child"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:text="@string/fio_child"
+        android:textColor="@color/black"
+        android:textSize="8sp"
+        android:gravity="center"
+        android:background="@drawable/edittext_border_2"/>
+
+    <TextView
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:text="@string/number_lc"
+        android:textColor="@color/black"
+        android:textSize="8sp"
+        android:gravity="center"
+        android:background="@drawable/edittext_border_2"/>
+
+    <TextView
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:text="@string/balance"
+        android:textColor="@color/black"
+        android:textSize="8sp"
+        android:gravity="center"
+        android:background="@drawable/edittext_border_2"/>
+
+    <TextView
+        android:layout_width="15dp"
+        android:layout_height="wrap_content"
+        android:textSize="8sp"
+        android:gravity="center"
+        android:background="@drawable/edittext_border_2"/>
+
+</TableRow>
