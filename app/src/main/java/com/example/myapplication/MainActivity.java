@@ -85,6 +85,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void infillRow(TableLayout tableLayout, TableRow tr, String value1, String tv4) {
+                        Kid kid = new Kid(
+                                surname_child.getText().toString(),
+                                name_child.getText().toString(),
+                                patronymic_child.getText().toString(),
+                                personal_account.getText().toString()
+                        );
         number = (TextView) tr.findViewById(R.id.number);
 
         //нумерации строк при добавлении строки
@@ -95,9 +101,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         fio_child = (TextView) tr.findViewById(R.id.fio_child);
-        fio_child.setText(value1);
+        fio_child.setText(kid.getFullName());
         number_lc = (TextView) tr.findViewById(R.id.number_lc);
-        number_lc.setText(tv4);
+        number_lc.setText(kid.getNumberLC());
 
         //переопределяем ImageView, которые появляются со строками
         ImageView markOfTheRow = tr.findViewById(R.id.mark);
@@ -180,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
                         dialog.dismiss();
 
                         //запись в БД
-                        myDbManager.insertToDb(number.getText().toString(), fio_child.getText().toString(), personal_account.getText().toString());
+                        myDbManager.insertToDb(number.getText().toString(), kid);
 
                         Toast.makeText(getApplicationContext(), "Ребенок добавлен", Toast.LENGTH_SHORT).show();
 

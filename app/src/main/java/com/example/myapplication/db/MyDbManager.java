@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.myapplication.Kid;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,11 +24,11 @@ public class MyDbManager {
         db = myDbHelper.getWritableDatabase();
     }
     //для открывания БД (запись)
-    public void insertToDb(String number, String fio_child, String number_lc) {
+    public void insertToDb(String number, Kid kid) {
         ContentValues cv = new ContentValues();
         cv.put(MyConstants.COLUMN_NUMBER, number);
-        cv.put(MyConstants.COLUMN_FIO_CHILD, fio_child);
-        cv.put(MyConstants.COLUMN_NUMBER_LC, number_lc);
+        cv.put(MyConstants.COLUMN_FIO_CHILD, kid.getFullName());
+        cv.put(MyConstants.COLUMN_NUMBER_LC, kid.getNumberLC());
         db.insert(MyConstants.TABLE_NAME, null, cv);
 
     }
