@@ -24,35 +24,38 @@ public class MyDbManager {
         db = myDbHelper.getWritableDatabase();
     }
     //для открывания БД (запись)
-    public void insertToDb(String number, Kid kid) {
-        ContentValues cv = new ContentValues();
-        cv.put(MyConstants.COLUMN_NUMBER, number);
-        cv.put(MyConstants.COLUMN_FIO_CHILD, kid.getFullName());
-        cv.put(MyConstants.COLUMN_NUMBER_LC, kid.getNumberLC());
-        db.insert(MyConstants.TABLE_NAME, null, cv);
+    public void insertToDb(Kid kid) {
+        db.execSQL("INSERT INTO " + MyConstants.TABLE_NAME + "(" +
+                MyConstants._ID + ", " +
+                MyConstants.COLUMN_NUMBER + ", " +
+                MyConstants.COLUMN_F_CHILD + ", " +
+                MyConstants.COLUMN_I_CHILD + ", " +
+                MyConstants.COLUMN_O_CHILD + ", " +
+                MyConstants.COLUMN_NUMBER_LC +
+                ") values (?, (SELECT IFNULL(MAX(" + MyConstants.COLUMN_NUMBER + "), 0) + 1 FROM " + MyConstants.TABLE_NAME + "), ?, ?, ?, ?)",
+                new String[]{kid.getUuid(), kid.getSurname(), kid.getName(), kid.getPatronymic(), kid.getNumberLC()});
 
     }
     //для открывания БД (считывание)
-    public List<List<String>> getFromDb() {
-        List<List<String>> tempList = new ArrayList<>();
-        Cursor cursor = db.query(MyConstants.TABLE_NAME, null, null, null, null, null, null);
+    public List<Kid> getFromDb() {
+        List<Kid> tempList = new ArrayList<>();
+        Cursor cursor = db.query(MyConstants.TABLE_NAME, null, MyConstants.COLUMN_HIDDEN +" = 0", null, null, null, null);
         while (cursor.moveToNext()) {
-            List<String> row = new ArrayList<>();
-            String number = cursor.getString(cursor.getColumnIndex(MyConstants.COLUMN_NUMBER));
-            String fio_child = cursor.getString(cursor.getColumnIndex(MyConstants.COLUMN_FIO_CHILD));
-            String number_lc = cursor.getString(cursor.getColumnIndex(MyConstants.COLUMN_NUMBER_LC));
-            row.add(number);
-            row.add(fio_child);
-            row.add(number_lc);
-
-            tempList.add(row);
+            String uuid = cursor.getString(cursor.getColumnIndex(MyConstants._ID));
+            int number = cursor.getInt(cursor.getColumnIndex(MyConstants.COLUMN_NUMBER));
+            String surname = cursor.getString(cursor.getColumnIndex(MyConstants.COLUMN_F_CHILD));
+            String name = cursor.getString(cursor.getColumnIndex(MyConstants.COLUMN_I_CHILD));
+            String patronymic = cursor.getString(cursor.getColumnIndex(MyConstants.COLUMN_O_CHILD));
+            String numberLC = cursor.getString(cursor.getColumnIndex(MyConstants.COLUMN_NUMBER_LC));
+            Kid kid = new Kid(uuid, number, surname, name, patronymic, numberLC);
+            tempList.add(kid);
         }
         cursor.close();
         return tempList;
     }
 
-    public void removeFromDb(String number_lc) {
-        db.delete(MyConstants.TABLE_NAME, MyConstants.COLUMN_NUMBER_LC + " = ?", new String[]{number_lc});
+    public void removeFromDb(String uuid) {
+        db.execSQL("UPDATE " + MyConstants.TABLE_NAME + " set " + MyConstants.COLUMN_HIDDEN + " = 1 where " + MyConstants._ID + " = ?", new String[]{uuid});
     }
     //для закрытия БД
     public void closeDb() {

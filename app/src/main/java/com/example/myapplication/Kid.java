@@ -7,14 +7,16 @@ import java.util.UUID;
  * Данные о произвольном ребёнке
  */
 public class Kid {
-    private String uuid;
+    private final String uuid;
+    private int number;
     private String surname;
     private String name;
     private String patronymic;
     private String numberLC;
 
-    public Kid(String uuid, String surname, String name, String patronymic, String numberLC) {
+    public Kid(String uuid, int number, String surname, String name, String patronymic, String numberLC) {
         this.uuid = uuid;
+        this.number = number;
         this.surname = surname;
         this.name = name;
         this.patronymic = patronymic;
@@ -23,6 +25,7 @@ public class Kid {
 
     public Kid(String surname, String name, String patronymic, String numberLC) {
         uuid = UUID.randomUUID().toString();
+        number = 0;
         this.surname = surname;
         this.name = name;
         this.patronymic = patronymic;
@@ -31,6 +34,14 @@ public class Kid {
 
     public String getUuid() {
         return uuid;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     public String getSurname() {
@@ -71,6 +82,7 @@ public class Kid {
         if (o == null || getClass() != o.getClass()) return false;
         Kid kid = (Kid) o;
         return Objects.equals(uuid, kid.uuid) &&
+                Objects.equals(number, kid.number) &&
                 Objects.equals(surname, kid.surname) &&
                 Objects.equals(name, kid.name) &&
                 Objects.equals(patronymic, kid.patronymic) &&
@@ -79,7 +91,7 @@ public class Kid {
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid, surname, name, patronymic, numberLC);
+        return Objects.hash(uuid, number, surname, name, patronymic, numberLC);
     }
 
     public String getFullName() {

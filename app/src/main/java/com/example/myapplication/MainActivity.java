@@ -57,9 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    private void reloadTable() {
         myDbManager.openDb();
         TableLayout tableLayout = (TableLayout) findViewById(R.id.table_children);
         tableLayout.removeAllViews();
@@ -68,12 +66,20 @@ public class MainActivity extends AppCompatActivity {
         TableRow header = (TableRow) inflater.inflate(R.layout.table_row_header, null);
         tableLayout.addView(header);
 
-        List<List<String>> data = myDbManager.getFromDb();
-        for (List<String> row: data) {
+        List<Kid> kids = myDbManager.getFromDb();
+        for (Kid kid: kids) {
             TableRow tr = (TableRow) inflater.inflate(R.layout.table_row_plus, null);
-            infillRow(tableLayout, tr, row.get(1), row.get(2));
+            //заполняем строку
+            infillRow(tableLayout, tr, kid);
+            //добавляем строку
             tableLayout.addView(tr);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        reloadTable();
     }
 
     @Override
@@ -84,21 +90,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void infillRow(TableLayout tableLayout, TableRow tr, String value1, String tv4) {
-                        Kid kid = new Kid(
-                                surname_child.getText().toString(),
-                                name_child.getText().toString(),
-                                patronymic_child.getText().toString(),
-                                personal_account.getText().toString()
-                        );
+    private void infillRow(TableLayout tableLayout, TableRow tr, Kid kid) {
         number = (TextView) tr.findViewById(R.id.number);
 
         //нумерации строк при добавлении строки
         int aInt = table_children.getChildCount();
-        for (int m = 0; m < aInt; m++) {
-            String aString = Integer.toString(m + 1);
-            number.setText(aString);
-        }
+        number.setText(Integer.toString(aInt));
+
+        //нумерации детей при добавлении в БД
+        TextView numberID = (TextView) tr.findViewById(R.id.number_id);
+        numberID.setText(Integer.toString(kid.getNumber()));
 
         fio_child = (TextView) tr.findViewById(R.id.fio_child);
         fio_child.setText(kid.getFullName());
@@ -112,10 +113,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                String myFio_child;
-                TableRow tr = (TableRow)v.getParent();
-                TextView reb = (TextView) tr.getChildAt(1);
-                myFio_child = reb.getText().toString();
+                String myFio_child = kid.getFullName();
                 builder.setMessage("Удалить: " + myFio_child + " ?");
                 builder.setCancelable(true);
                 builder.setNegativeButton("нет", new DialogInterface.OnClickListener() {
@@ -128,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         number_lc = (TextView) tr.findViewById(R.id.number_lc);
-                        myDbManager.removeFromDb(number_lc.getText().toString());
+                        myDbManager.removeFromDb(kid.getUuid());
                         tableLayout.removeView(tr);
                         Toast.makeText(getApplicationContext(), "Ребенок удалён", Toast.LENGTH_SHORT).show();
 
@@ -170,23 +168,19 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     if (!TextUtils.isEmpty(personal_account.getText().toString()) && !TextUtils.isEmpty(surname_child.getText().toString()) && !TextUtils.isEmpty(name_child.getText().toString()) &&
                             !TextUtils.isEmpty(patronymic_child.getText().toString())) {
-                        TableLayout tableLayout = (TableLayout) findViewById(R.id.table_children);
-                        LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
-                        TableRow tr = (TableRow) inflater.inflate(R.layout.table_row_plus, null);
 
-                        //заполняем строку
-                        String tv1 = surname_child.getText().toString();
-                        String tv2 = name_child.getText().toString();
-                        String tv3 = patronymic_child.getText().toString();
-                        String value1 = tv1 + " " + tv2 + " " + tv3;
-                        String tv4 = personal_account.getText().toString();
-                        infillRow(tableLayout, tr, value1, tv4);
-                        //добавляем строку
-                        tableLayout.addView(tr);
+                        Kid kid = new Kid(
+                                surname_child.getText().toString(),
+                                name_child.getText().toString(),
+                                patronymic_child.getText().toString(),
+                                personal_account.getText().toString()
+                        );
                         dialog.dismiss();
 
                         //запись в БД
-                        myDbManager.insertToDb(number.getText().toString(), kid);
+                        myDbManager.insertToDb(kid);
+                        //чтение (с учётом автогенерации и, в будущем, сортировки)
+                        reloadTable();
 
                         Toast.makeText(getApplicationContext(), "Ребенок добавлен", Toast.LENGTH_SHORT).show();
 

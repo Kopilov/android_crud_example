@@ -46,6 +46,7 @@
     <string name="cancellation">Отмена</string>
 
     <string name="number">№</string>
+    <string name="number_id">Перс. код</string>
     <string name="fio_child">Ф.И.О. ребенка</string>
     <string name="number_lc">Лицевой счет</string>
     <string name="balance">Баланс</string>
